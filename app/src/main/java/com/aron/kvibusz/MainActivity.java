@@ -45,8 +45,8 @@ public class MainActivity extends AppCompatActivity {
     public Dictionary<String, String> busStops = new Hashtable<>();
     public Dictionary<String, List<String>> routes = new Hashtable<>();
     TextView currentAddressTextView;
-    ImageView errorImage;
-    TextView errorText;
+    ImageView infoImage;
+    TextView infoText;
     RecyclerView busRecyclerView;
     Geocoder geocoder;
     ArrayList<String> busStopNames = new ArrayList<>();
@@ -81,6 +81,8 @@ public class MainActivity extends AppCompatActivity {
         currentAddressTextView = findViewById(R.id.currentAddressTextView);
         updateLocation(this);
         busRecyclerView = findViewById(R.id.busRecyclerView);
+        infoText = findViewById(R.id.infoText);
+        infoImage = findViewById(R.id.infoImage);
     }
 
     public void loadStopsJson(final double lon, final double lat, final Context c) {
@@ -215,15 +217,25 @@ public class MainActivity extends AppCompatActivity {
                             busAdapter busAdapter = new busAdapter(c, busStopNames, busNumbers, lineColors, textColors, directions, whenTimes, currentTime);
                             busRecyclerView.setAdapter(busAdapter);
                             busRecyclerView.setLayoutManager(new LinearLayoutManager(c));
-                            if (busNumbers.size() == 0) {
-                                errorText.setText("Valami hiba történt, vagy ma már nem jön több busz :(");
-                                errorImage.setImageDrawable(AppCompatResources.getDrawable(c, R.drawable.ic_error_outline_24px));
-                            }
-
+//                            if (busNumbers.size() == 0) {
+//                                errorText.setText("Valami hiba történt, vagy ma már nem jön több busz :(");
+//                                errorImage.setImageDrawable(AppCompatResources.getDrawable(c, R.drawable.ic_error_outline_24px));
+//                            } else {
+//                                errorText.setVisibility(View.INVISIBLE);
+//                                errorImage.setVisibility(View.INVISIBLE);
+//                            }
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
+                        if (busNumbers.size() == 0) {
+                            infoText.setText("Valami hiba történt, vagy ma már nem jön több busz :(");
+                            infoImage.setImageDrawable(AppCompatResources.getDrawable(c, R.drawable.ic_error_outline_24px));
+                        } else {
+                            infoText.setVisibility(View.INVISIBLE);
+                            infoImage.setVisibility(View.INVISIBLE);
+                        }
                     }
+
 
                     @Override
                     public void onError(ANError anError) {

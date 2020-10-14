@@ -81,6 +81,7 @@ public class activeBusActivity extends AppCompatActivity {
             }
 
             public void onFinish() {
+                stopNotificationService();
                 timeLeftTextView.setText("🚌");
             }
         }.start();

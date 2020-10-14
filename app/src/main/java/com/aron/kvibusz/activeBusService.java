@@ -18,7 +18,7 @@ public class activeBusService extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
-//        stopSelf();
+        stopSelf();
     }
 
     @Override
