@@ -6,4 +6,5 @@ Az alkalmazás lekéri az eszköz GPS pozícióját, és kilistázza az 500 mét
 
 ## APK
 A telepíthető APK elérhető az alábbi linken.
+
 https://github.com/arcsi05/K-viBusz/releases/tag/install
