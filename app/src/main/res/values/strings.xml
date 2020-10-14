@@ -1,0 +1,29 @@
+<resources>
+    <string name="app_name">KöviBusz</string>
+
+    <string-array name="busStopNames">
+        <item>Vilonyai utca</item>
+        <item>Vasútállomás</item>
+        <item>Egyetem utca</item>
+    </string-array>
+    <string-array name="busNumbers">
+        <item>3</item>
+        <item>5</item>
+        <item>10</item>
+    </string-array>
+    <string-array name="lineColors">
+        <item>#F55D3E</item>
+        <item>#F7CB15</item>
+        <item>#76BED0</item>
+    </string-array>
+    <string-array name="directions">
+        <item>► Egyetemváros</item>
+        <item>► Dózsaváros</item>
+        <item>► Vasútállomás</item>
+    </string-array>
+    <string-array name="remainingTimes">
+        <item>3</item>
+        <item>8</item>
+        <item>12</item>
+    </string-array>
+</resources>
