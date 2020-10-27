@@ -1,6 +1,8 @@
 package com.aron.kvibusz;
 
 import android.Manifest;
+import android.animation.ObjectAnimator;
+import android.animation.PropertyValuesHolder;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.location.Address;
@@ -46,6 +48,9 @@ public class MainActivity extends AppCompatActivity {
     public Dictionary<String, List<String>> routes = new Hashtable<>();
     TextView currentAddressTextView;
     ImageView infoImage;
+    ImageView refreshImage;
+    ImageView helpArrow;
+    TextView helpText;
     TextView infoText;
     RecyclerView busRecyclerView;
     Geocoder geocoder;
@@ -59,13 +64,10 @@ public class MainActivity extends AppCompatActivity {
     Double currentTime;
     private FusedLocationProviderClient fusedLocationClient;
 
-    //    FloatingActionButton refreshButton;
-// TODO: Implement animation on refresh button
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         AndroidNetworking.initialize(getApplicationContext());
-//        mQueue = Volley.newRequestQueue(this);
         setContentView(R.layout.activity_main);
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
         geocoder = new Geocoder(this, Locale.getDefault());
@@ -79,10 +81,24 @@ public class MainActivity extends AppCompatActivity {
 
 
         currentAddressTextView = findViewById(R.id.currentAddressTextView);
-        updateLocation(this);
         busRecyclerView = findViewById(R.id.busRecyclerView);
         infoText = findViewById(R.id.infoText);
         infoImage = findViewById(R.id.infoImage);
+        refreshImage = findViewById(R.id.refreshButton);
+        helpArrow = findViewById(R.id.helpArrow);
+        helpText = findViewById(R.id.helpText);
+        updateLocation(this);
+
+        ObjectAnimator pulseLoading = ObjectAnimator.ofPropertyValuesHolder(
+                infoImage,
+                PropertyValuesHolder.ofFloat("scaleX", 1.2f),
+                PropertyValuesHolder.ofFloat("scaleY", 1.2f));
+        pulseLoading.setDuration(310);
+        pulseLoading.setRepeatCount(ObjectAnimator.INFINITE);
+        pulseLoading.setRepeatMode(ObjectAnimator.REVERSE);
+
+        pulseLoading.start();
+
     }
 
     public void loadStopsJson(final double lon, final double lat, final Context c) {
@@ -217,26 +233,21 @@ public class MainActivity extends AppCompatActivity {
                             busAdapter busAdapter = new busAdapter(c, busStopNames, busNumbers, lineColors, textColors, directions, whenTimes, currentTime);
                             busRecyclerView.setAdapter(busAdapter);
                             busRecyclerView.setLayoutManager(new LinearLayoutManager(c));
-//                            if (busNumbers.size() == 0) {
-//                                errorText.setText("Valami hiba történt, vagy ma már nem jön több busz :(");
-//                                errorImage.setImageDrawable(AppCompatResources.getDrawable(c, R.drawable.ic_error_outline_24px));
-//                            } else {
-//                                errorText.setVisibility(View.INVISIBLE);
-//                                errorImage.setVisibility(View.INVISIBLE);
-//                            }
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
                         if (busNumbers.size() == 0) {
                             infoText.setText("Valami hiba történt, vagy ma már nem jön több busz :(");
                             infoImage.setImageDrawable(AppCompatResources.getDrawable(c, R.drawable.ic_error_outline_24px));
+                            helpArrow.setVisibility(View.VISIBLE);
+                            helpText.setVisibility(View.VISIBLE);
                         } else {
                             infoText.setVisibility(View.INVISIBLE);
                             infoImage.setVisibility(View.INVISIBLE);
                         }
+                        refreshImage.clearAnimation();
+                        refreshImage.animate().cancel();
                     }
-
-
                     @Override
                     public void onError(ANError anError) {
                         Log.i("jsondolgok", "Json hiba van");
@@ -251,6 +262,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void onClick(View v) {
+        v.clearAnimation();
+        v.animate().cancel();
+//        refreshImage.clearAnimation();
+        v.animate().rotation(1800).setDuration(2000).start();
         updateLocation(v.getContext());
     }
 
@@ -273,7 +288,7 @@ public class MainActivity extends AppCompatActivity {
                     Log.d("GPSdebug", "accuracy: " + location.getAccuracy());
                     try {
                         List<Address> tmp = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
-                        Log.i("fos", tmp.toString());
+//                        Log.i("json", tmp.toString());
                         currentAddressTextView.setText(tmp.get(0).getThoroughfare() + " " + tmp.get(0).getFeatureName() + ".");
                     } catch (IOException e) {
                         e.printStackTrace();
